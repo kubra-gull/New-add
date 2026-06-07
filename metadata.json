@@ -1,0 +1,6 @@
+{
+  "name": "National Immunization Hub",
+  "description": "Enterprise-Grade National Vaccine Management, Immunization Tracking, Public Health Intelligence, Inventory Control, and Healthcare POS Platform for Pakistan",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

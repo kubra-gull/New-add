@@ -1,0 +1,554 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with role, contact information, and geographic assignment across Pakistan",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique authentication user ID"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full legal name"
+        },
+        "cnic": {
+          "type": "string",
+          "description": "13-digit Pakistani CNIC number (e.g. 37405-1234567-1)"
+        },
+        "mobileNumber": {
+          "type": "string",
+          "description": "Mobile contact number (e.g. 0300-1234567)"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address"
+        },
+        "province": {
+          "type": "string",
+          "description": "Province of assignment"
+        },
+        "district": {
+          "type": "string",
+          "description": "District of assignment"
+        },
+        "tehsil": {
+          "type": "string",
+          "description": "Tehsil of assignment"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "Super Administrator",
+            "Provincial Manager",
+            "District Manager",
+            "Medical Officer",
+            "Vaccinator",
+            "Lady Health Worker",
+            "Store Manager",
+            "Auditor"
+          ],
+          "description": "Access control role"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Account registration timestamp"
+        }
+      },
+      "required": [
+        "uid",
+        "fullName",
+        "cnic",
+        "mobileNumber",
+        "email",
+        "province",
+        "district",
+        "tehsil",
+        "role",
+        "createdAt"
+      ]
+    },
+    "Patient": {
+      "title": "Patient",
+      "description": "Child patient record registered on the hub with guardian credentials",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Auto-generated unique Patient ID (e.g. NIH-PAT-10045)"
+        },
+        "childName": {
+          "type": "string",
+          "description": "Child's name"
+        },
+        "dob": {
+          "type": "string",
+          "description": "Date of Birth (YYYY-MM-DD)"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender of the child"
+        },
+        "guardianName": {
+          "type": "string",
+          "description": "Guardian's name"
+        },
+        "cnic": {
+          "type": "string",
+          "description": "Guardian's CNIC number"
+        },
+        "mobileNumber": {
+          "type": "string",
+          "description": "Guardian's mobile number"
+        },
+        "address": {
+          "type": "string",
+          "description": "Full physical address"
+        },
+        "province": {
+          "type": "string",
+          "description": "Province of residence"
+        },
+        "district": {
+          "type": "string",
+          "description": "District of residence"
+        },
+        "tehsil": {
+          "type": "string",
+          "description": "Tehsil of residence"
+        },
+        "unionCouncil": {
+          "type": "string",
+          "description": "Union Council (UC) name of residence"
+        },
+        "registeredBy": {
+          "type": "string",
+          "description": "UID of registering health operator"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Registration ISO timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "childName",
+        "dob",
+        "gender",
+        "guardianName",
+        "cnic",
+        "mobileNumber",
+        "address",
+        "province",
+        "district",
+        "tehsil",
+        "unionCouncil",
+        "registeredBy",
+        "createdAt"
+      ]
+    },
+    "Vaccination": {
+      "title": "Vaccination",
+      "description": "Individual dose record administered or scheduled for a patient child",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique record tracking code"
+        },
+        "patientId": {
+          "type": "string",
+          "description": "Auto-assigned Patient ID reference"
+        },
+        "diseaseName": {
+          "type": "string",
+          "description": "Disease protection name (e.g., Polio, Measles, BCG)"
+        },
+        "doseNumber": {
+          "type": "integer",
+          "description": "Dose sequence (e.g. 1 for first, 2 for second, 3 for third, 4 for Booster)"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "administered",
+            "scheduled",
+            "missed"
+          ],
+          "description": "Administration progress outcome"
+        },
+        "administeredDate": {
+          "type": "string",
+          "description": "ISO timestamp of dose given"
+        },
+        "scheduledDate": {
+          "type": "string",
+          "description": "ISO date of appointment booking"
+        },
+        "batchNumber": {
+          "type": "string",
+          "description": "Inventory batch number utilized"
+        },
+        "administeredBy": {
+          "type": "string",
+          "description": "User UID who performed injection or oral vaccination"
+        },
+        "clinicLocation": {
+          "type": "string",
+          "description": "Name of district hospital or health center"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Clinical annotations or observations"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Record addition timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "patientId",
+        "diseaseName",
+        "doseNumber",
+        "status",
+        "scheduledDate",
+        "createdAt"
+      ]
+    },
+    "Inventory": {
+      "title": "Inventory",
+      "description": "Cold chain stock monitoring database matching shipments and storage hubs",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique inventory entry ID"
+        },
+        "vaccineName": {
+          "type": "string",
+          "description": "Vaccine name matched to protected disease"
+        },
+        "batchNumber": {
+          "type": "string",
+          "description": "Unique manufacturer batch identifier"
+        },
+        "manufacturer": {
+          "type": "string",
+          "description": "Pharmaceutical manufacturer name"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Doses currently available in stock"
+        },
+        "arrivalDate": {
+          "type": "string",
+          "description": "Date of storage delivery"
+        },
+        "expiryDate": {
+          "type": "string",
+          "description": "Date of vaccine expiry"
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Current temperature reading (Cold chain mandate: 2 to 8 deg C)"
+        },
+        "minimumTemp": {
+          "type": "number",
+          "description": "Minimum observed storage temperature"
+        },
+        "maximumTemp": {
+          "type": "number",
+          "description": "Maximum observed storage temperature"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Robust",
+            "Low Stock",
+            "Expired",
+            "Critical Temperature Alert"
+          ],
+          "description": "Current logistics asset status"
+        },
+        "province": {
+          "type": "string",
+          "description": "Province of storage"
+        },
+        "district": {
+          "type": "string",
+          "description": "District of storage"
+        },
+        "tehsil": {
+          "type": "string",
+          "description": "Tehsil of storage"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "vaccineName",
+        "batchNumber",
+        "manufacturer",
+        "quantity",
+        "arrivalDate",
+        "expiryDate",
+        "temperature",
+        "status",
+        "createdAt"
+      ]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Gateway alert dispatcher logs tracking immunization reminders",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Notification transmission reference"
+        },
+        "patientId": {
+          "type": "string",
+          "description": "Reference child patient id"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Upcoming Dose Reminder",
+            "Booster Reminder",
+            "Missed Dose Alert"
+          ],
+          "description": "Form of vaccine notice"
+        },
+        "medium": {
+          "type": "string",
+          "enum": [
+            "SMS",
+            "Email",
+            "WhatsApp"
+          ],
+          "description": "Contact dispatch protocol"
+        },
+        "recipient": {
+          "type": "string",
+          "description": "Target address (mobile number or email)"
+        },
+        "templateName": {
+          "type": "string",
+          "description": "National vaccine notice template used"
+        },
+        "messageBody": {
+          "type": "string",
+          "description": "Written alert text body"
+        },
+        "sentAt": {
+          "type": "string",
+          "description": "Timestamp of transmission"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Sent",
+            "Pending",
+            "Failed"
+          ],
+          "description": "Delivery confirmation status"
+        }
+      },
+      "required": [
+        "id",
+        "patientId",
+        "type",
+        "medium",
+        "recipient",
+        "messageBody",
+        "sentAt",
+        "status"
+      ]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Public advocacy feedback from citizens and vaccinators demonstrating ground progress",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique submission tracking key"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the contributor"
+        },
+        "role": {
+          "type": "string",
+          "description": "Contributor designation (Parent, Lady Health Worker, etc.)"
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Campaign satisfaction review points (1 to 5 stars)"
+        },
+        "feedback": {
+          "type": "string",
+          "description": "Description of feedback, success stories, or suggestions"
+        },
+        "province": {
+          "type": "string",
+          "description": "Province feedback originates from"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Submission timestamp"
+        }
+      },
+      "required": [
+        "id",
+        "fullName",
+        "role",
+        "rating",
+        "feedback",
+        "province",
+        "createdAt"
+      ]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Automated system reconciliation logs, coverage evaluations, and compliance reports",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique report storage signature"
+        },
+        "title": {
+          "type": "string",
+          "description": "Name of the analytics compile"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Reconciliation",
+            "Compliance",
+            "Variance",
+            "Coverage"
+          ],
+          "description": "Substance of public health audit compile"
+        },
+        "period": {
+          "type": "string",
+          "description": "Target report window (Daily, Weekly, Monthly, Annual)"
+        },
+        "generatedBy": {
+          "type": "string",
+          "description": "UID of generating manager"
+        },
+        "generatedByEmail": {
+          "type": "string",
+          "description": "Email identifier of the operator"
+        },
+        "generatedAt": {
+          "type": "string",
+          "description": "Time of report print"
+        },
+        "data": {
+          "type": "string",
+          "description": "Full serialized payload of the metrics"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "type",
+        "period",
+        "generatedBy",
+        "generatedByEmail",
+        "generatedAt",
+        "data"
+      ]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Centralized national tamper-proof security tracking record for operations traceability",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Cryptographic database auto identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "User UID who initiated event"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "Operator user email signature"
+        },
+        "userRole": {
+          "type": "string",
+          "description": "Account role of event creator"
+        },
+        "action": {
+          "type": "string",
+          "description": "Operation executed (e.g. LOGIN, PATIENT_REGISTRATION, VACCINE_USED, REPORT_EXPORT, DATABASE_UPDATE)"
+        },
+        "details": {
+          "type": "string",
+          "description": "Complete text specifics outlining changes"
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "Device location IP marker"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of action trigger"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "userEmail",
+        "action",
+        "details",
+        "timestamp"
+      ]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Pakistan NIH Registered Public Health Personnel Profiles"
+    },
+    "patients": {
+      "schema": "Patient",
+      "description": "Central National Vaccine Registered Children Registry"
+    },
+    "vaccinations": {
+      "schema": "Vaccination",
+      "description": "Standardized Pediatric Vaccine Log entries"
+    },
+    "inventory": {
+      "schema": "Inventory",
+      "description": "National Cold Chain and Immunization Asset Stocks Registry"
+    },
+    "notifications": {
+      "schema": "Notification",
+      "description": "System Outbound Vaccine Dose Alerts & Communications Dispatch Ledger"
+    },
+    "testimonials": {
+      "schema": "Testimonial",
+      "description": "Public health campaign progress advocacy feedback collection"
+    },
+    "reports": {
+      "schema": "Report",
+      "description": "Compiled National Vaccine Coverage & End-of-Day Reconciliation records"
+    },
+    "auditlogs": {
+      "schema": "AuditLog",
+      "description": "Tamper-proof compliance log history for NIH operations tracking"
+    }
+  }
+}
