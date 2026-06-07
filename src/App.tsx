@@ -18,6 +18,8 @@ import {
   Smartphone,
   ChevronLeft,
   ChevronRight,
+  LogOut,
+  User,
 } from "lucide-react";
 
 // Import modules
@@ -29,8 +31,16 @@ import { ScannerView } from "./components/ScannerView";
 import { NotificationsView } from "./components/NotificationsView";
 import { TestimonialsView } from "./components/TestimonialsView";
 import { ReportsView } from "./components/ReportsView";
+import { AuthView } from "./components/AuthView";
+import { mockAuth } from "./data/mockFirebase";
+import { UserProfile } from "./types";
 
 export default function App() {
+  // Account authorization flow state
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    return mockAuth.getCurrentUser();
+  });
+
   // Navigation tabs state
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   
@@ -56,6 +66,16 @@ export default function App() {
       localStorage.setItem("nih-theme", "light");
     }
   }, [isDarkMode]);
+
+  const handleAuthSuccess = (profile: UserProfile) => {
+    setUser(profile);
+  };
+
+  const handleSignOut = () => {
+    mockAuth.signOut();
+    setUser(null);
+    setActiveTab("dashboard");
+  };
 
   const menuItems = [
     { id: "dashboard", label: "Operations Room", icon: LayoutDashboard },
@@ -91,6 +111,10 @@ export default function App() {
         return <DashboardView />;
     }
   };
+
+  if (!user) {
+    return <AuthView onSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-dark-bg text-slate-800 dark:text-slate-100 flex flex-col md:flex-row transition-colors duration-200">
@@ -195,24 +219,59 @@ export default function App() {
         {/* Desktop Footer (Ministry identity) */}
         <div className="p-4 border-t border-white/5 space-y-4">
           
+          {/* Active User Information Card */}
+          <div className="bg-slate-950/40 p-3 rounded-xl border border-white/5 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs shrink-0 select-none">
+                {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
+              </div>
+              {!sidebarCollapsed && (
+                <div className="min-w-0 flex-1 text-left">
+                  <h4 className="text-xs font-bold text-slate-200 truncate" title={user.fullName}>
+                    {user.fullName}
+                  </h4>
+                  <p className="text-[9px] text-primary/80 font-mono truncate uppercase">
+                    {user.role}
+                  </p>
+                </div>
+              )}
+            </div>
+            {!sidebarCollapsed && (
+              <div className="text-[10px] text-slate-400 font-mono border-t border-white/5 pt-1.5 flex flex-col gap-0.5 text-left">
+                <span className="truncate">📍 {user.tehsil || "Central"}, {user.province || "PK"}</span>
+                <span className="text-[9px] text-slate-500 truncate lowercase">{user.email}</span>
+              </div>
+            )}
+            
+            <button
+              onClick={handleSignOut}
+              className={`w-full flex items-center gap-2 p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/20 text-xs transition-all ${
+                sidebarCollapsed ? "justify-center" : "justify-start"
+              }`}
+              title="Sign Out of Hub"
+            >
+              <LogOut className="w-3.5 h-3.5 shrink-0" />
+              {!sidebarCollapsed && <span>Sign Out</span>}
+            </button>
+          </div>
+
           {/* Quick theme control on sidebar footer */}
           {!sidebarCollapsed && (
             <div className="flex items-center justify-between bg-slate-850 p-2 rounded-xl text-xs text-slate-300">
               <span>Theme choice</span>
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-1 rounded bg-slate-800 hover:text-primary"
+                className="p-1 rounded bg-slate-800 hover:text-primary transition-all cursor-pointer"
               >
                 {isDarkMode ? <Sun className="w-4 h-4 text-primary" /> : <Moon className="w-4 h-4" />}
               </button>
             </div>
           )}
 
-          <div className="text-center text-[10px] text-slate-500 font-mono">
+          <div className="text-center text-[10px] text-slate-550 font-mono">
             {!sidebarCollapsed ? (
-              <div className="space-y-1">
-                <span className="block text-slate-400">© 2026 MNHSRC Pakistan</span>
-                <span className="block opacity-75">Integrated EPI Server 4.1</span>
+              <div className="space-y-1 text-slate-400">
+                <span>© 2026 MNHSRC Pakistan</span>
               </div>
             ) : (
               <span>🇵🇰</span>
@@ -275,8 +334,38 @@ export default function App() {
                 </nav>
               </div>
 
-              <div className="border-t border-slate-80a pt-4">
-                <p className="text-[10px] text-slate-500 text-center font-mono uppercase">
+              <div className="border-t border-slate-800 pt-4 space-y-4">
+                <div className="bg-slate-950/60 p-3 rounded-xl border border-white/5 space-y-1.5 text-left">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs select-none">
+                      {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs font-bold text-slate-100 truncate">
+                        {user.fullName}
+                      </h4>
+                      <p className="text-[9px] text-primary/80 font-mono uppercase">
+                        {user.role}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-[9px] text-slate-400 font-mono">
+                    📍 {user.tehsil || "Central"}, {user.province || "PK"}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-950/60 border border-red-900/40 text-red-300 text-xs font-bold transition-all cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out of Hub</span>
+                </button>
+
+                <p className="text-[9px] text-slate-500 text-center font-mono uppercase">
                   Lady Health Worker Net (EPI)
                 </p>
               </div>

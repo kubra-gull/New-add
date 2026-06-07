@@ -650,13 +650,10 @@ const getSessionState = (): AuthState => {
     try {
       return { currentUser: JSON.parse(user) };
     } catch {
-      return { currentUser: INITIAL_USERS[0] }; // Auto-login to Kubra Khan as fallback
+      return { currentUser: null };
     }
   }
-  // Default to pre-authenticated Kubra Khan for seamless app preview
-  const defaultUser = INITIAL_USERS[0];
-  localStorage.setItem("nih_session", JSON.stringify(defaultUser));
-  return { currentUser: defaultUser };
+  return { currentUser: null };
 };
 
 let currentSession: AuthState = getSessionState();
